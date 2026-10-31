@@ -1,0 +1,265 @@
+/* =========================================================
+   ESPAÑA ATLAS — style.css  /  地図サイトの見た目
+   読み順: (1)色の変数 → (2)レイアウト → (3)地図 → (4)スマホ対応
+   ========================================================= */
+
+/* 【1】配色変数: --名前 で色を登録し var(--名前) で呼び出します。 */
+:root {
+  color-scheme:light;
+  --page: #f8f7f2; --surface:#fffefb; --surface-2:#f0f1eb;
+  --text:#213044; --muted:#6f7d84; --border:#e1e6e0;
+  --sea:#d9e9eb; --land:#c8ded0; --land-stroke:#6f9d8c;
+  --neighbor:#e9ebe5; --neighbor-stroke:#aebdb8; --country-label:#9aa6a2;
+  --accent:#218a75; --accent-text:#fff; --rail:#df884e;
+  --shadow: 0 18px 45px rgba(37,54,70,.075);
+}
+/* ダークモード: 色の名前は共通なので既存のCSS指定を再利用できます。 */
+body.dark-theme {
+  color-scheme:dark;
+  --page:#101b26; --surface:#192937; --surface-2:#243746;
+  --text:#e8f0f2; --muted:#a9bbc1; --border:#344c59;
+  --sea:#253f50; --land:#345f54; --land-stroke:#90b8a8;
+  --neighbor:#30434a; --neighbor-stroke:#607781; --country-label:#91a8af;
+  --accent:#50b99f; --accent-text:#102521; --rail:#f3b57a;
+  --shadow:0 24px 55px rgba(1,9,16,.25);
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--page); color:var(--text);
+  font-family: -apple-system, BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif;
+  line-height:1.7; transition:background .25s,color .25s; }
+a { color:inherit; }
+button,select,input { font:inherit; }
+button { cursor:pointer; }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible {outline:3px solid var(--accent);outline-offset:3px;}
+[hidden] {display:none!important;}
+.wrapper { max-width:1540px; padding:0 5%; margin:0 auto; }
+
+/* 【2】ヘッダー: display:flex は横方向に要素を並べる基本操作です。 */
+.header {height:82px; padding:0 5%; display:flex; align-items:center; justify-content:space-between; gap:20px;
+  background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0;z-index:50;}
+.logo {font-size:20px;font-weight:900;text-decoration:none;letter-spacing:.13em;white-space:nowrap;}
+.logo em {font-weight:400;font-style:normal;letter-spacing:.07em;}
+.logo-sun {font-size:25px; color:#d98d51; margin-right:6px;}
+.header nav {display:flex;gap:26px;align-items:center;}
+.header nav a {font-size:13px;font-weight:700;text-decoration:none;color:var(--muted);}
+.header nav a:hover {color:var(--accent);}
+.mode,.pill {background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:50px;padding:9px 15px;font-size:12px;font-weight:700;white-space:nowrap;}
+.mode:hover,.pill:hover {border-color:var(--accent);}
+
+/* ヒーローは文章と装飾ビジュアルの2カラムです。 */
+.hero {min-height:380px;display:grid;grid-template-columns:1.15fr .85fr;overflow:hidden;background:var(--surface);}
+.hero>div:first-child {padding:78px 8% 75px 11%;}
+.eyebrow {letter-spacing:.15em;font-size:11px;font-weight:900;color:var(--accent);text-transform:uppercase;}
+.hero h1 {font-size:clamp(30px,4.2vw,60px);line-height:1.35;letter-spacing:-.045em;margin:17px 0;}
+.hero h1 span {font-weight:500;color:#d88e60;}
+.hero p {color:var(--muted);font-size:14px;margin:0 0 25px;}
+.primary {display:inline-flex;align-items:center;justify-content:space-between;gap:32px;background:var(--accent);color:var(--accent-text);text-decoration:none;border:0;border-radius:9px;padding:12px 21px;font-weight:900;font-size:13px;}
+.primary:hover {filter:brightness(1.07);}
+.primary.small{padding:12px 18px;align-self:end;}
+.hero-art {position:relative;overflow:hidden;min-height:380px;background:linear-gradient(170deg,#f5cda9,#dd9b71 55%,#91b3ae);}
+.sun{position:absolute;width:210px;height:210px;top:75px;left:35%;border-radius:50%;background:#fff0c5;box-shadow:0 0 60px #f8d7ab;}
+.landscape{position:absolute;bottom:-120px;left:-10%;width:140%;height:310px;border-radius:50% 45% 0 0;transform:rotate(-9deg);}
+.landscape.a{background:#698b80;bottom:-144px;}
+.landscape.b{background:#385f61;bottom:-225px;transform:rotate(13deg);}
+.art-caption{position:absolute;bottom:30px;right:35px;color:#fff;font-size:12px;letter-spacing:.18em;font-weight:900;}
+
+/* 【3】全体の余白やタブ */
+.section {padding-top:70px;padding-bottom:20px;scroll-margin-top:100px;}
+.section-title {margin-bottom:26px;}
+.section-title h2 {font-size:clamp(24px,3vw,36px);line-height:1.4;margin:9px 0 10px;letter-spacing:-.035em;}
+.section-title p {color:var(--muted);font-size:14px;margin:0;}
+.topic-tabs {display:flex; flex-wrap:wrap;gap:10px;margin:24px 0 17px;}
+.topic {background:var(--surface);color:var(--text);border:1px solid var(--border);padding:10px 17px;border-radius:999px;font-size:13px;font-weight:800;transition:background .2s,transform .2s;}
+.topic.active {background:var(--text);color:var(--surface);border-color:var(--text);}
+.topic:hover {transform:translateY(-2px);}
+.map-layout {display:grid;grid-template-columns:minmax(0,1.9fr) minmax(270px,.8fr);align-items:stretch;gap:18px;}
+.map-panel,.details-panel,.travel-panel {background:var(--surface);border:1px solid var(--border);border-radius:17px;box-shadow:var(--shadow);overflow:hidden;}
+.map-header,.map-footer {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 17px;font-size:11px;color:var(--muted);}
+.map-header b {color:var(--text);letter-spacing:.12em;font-size:12px;}
+.live-dot {display:inline-block;width:8px;height:8px;border-radius:50%;background:#43bc97;margin-right:5px;}
+.map-footer {flex-wrap:wrap;border-top:1px solid var(--border);}
+
+/* 【4】縦横比維持の要: SVGのviewBox=1200x860に対して同じ比率を指定。 */
+.map-scroll {width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain;}
+.map-canvas {position:relative;width:100%;aspect-ratio:1200/860;isolation:isolate;}
+#map-svg {display:block;width:100%;height:100%;}
+.sea-bg {fill:var(--sea);}
+.neighbor {fill:var(--neighbor);stroke:var(--neighbor-stroke);stroke-width:1.9;stroke-linejoin:round;}
+.spain-land {fill:var(--land);stroke:var(--land-stroke);stroke-width:2.5;stroke-linejoin:round;}
+.spain-land.island {stroke-width:1.9;}
+#regional-borders {pointer-events:none;}
+#regional-borders path {fill:none;stroke:var(--land-stroke);stroke-width:1.15;opacity:.65;}
+.country-label {fill:var(--country-label);font-weight:900;letter-spacing:4px;pointer-events:none;}
+.spain-label{fill:var(--land-stroke);font-size:25px;letter-spacing:8px;font-weight:900;pointer-events:none;opacity:.6;text-anchor:middle;}
+.sea-label{fill:var(--country-label);font-size:12px;letter-spacing:3px;font-weight:800;opacity:.55;pointer-events:none;}
+.inset-frame{fill:var(--sea);stroke:var(--neighbor-stroke);stroke-width:2;stroke-dasharray:7 5;}
+.inset-label{font-weight:900;font-size:12px;fill:var(--country-label);letter-spacing:2px;text-anchor:middle;}
+.compass path{fill:var(--country-label);}.compass text{fill:var(--country-label);font-size:18px;font-weight:900;text-anchor:middle;}
+/* 鉄道路線はSVG線なので線幅を固定し拡大しても操作しやすくする。 */
+#rail-network path{fill:none;stroke:var(--rail);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;opacity:.88;}
+#rail-network path.conventional{stroke:#748ba0;stroke-width:3;stroke-dasharray:8 6;}
+#rail-network circle{fill:var(--surface);stroke:var(--rail);stroke-width:2;}
+#rail-selected path{fill:none;stroke:#f7d352;stroke-width:8;stroke-dasharray:11 8;stroke-linecap:round;}
+body:not(.rails-visible) #rail-network,body:not(.rails-visible) #rail-selected {display:none;}
+.rail-label {fill:#805c38;font-size:13px;font-weight:900;paint-order:stroke;stroke:var(--sea);stroke-width:3;}
+/* .markersはSVGの上に重ねたボタン用の透明レイヤー。left/topで座標指定。 */
+.markers {position:absolute;inset:0;pointer-events:none;}
+.marker {position:absolute;transform:translate(-50%,-50%);pointer-events:auto;border:2px solid #fff;box-shadow:0 3px 15px #173a3b42;cursor:pointer;display:grid;place-items:center;transition:transform .15s;z-index:2;}
+.marker:hover,.marker.selected,.marker:focus-visible {transform:translate(-50%,-50%) scale(1.18);z-index:10;}
+.marker.poi {width:33px;height:33px;background:var(--accent);border-radius:50%;color:#fff;font-size:16px;}
+.marker.city{width:21px;height:21px;border-radius:50%;background:#f1a869;}
+.marker.club {width:41px;height:45px;padding:4px;border-radius:11px;background:#fff;}
+.marker.club img{width:100%;height:100%;object-fit:contain;display:block;}
+.marker.club .fallback-logo {font-size:10px;font-weight:900;color:#294356;}
+.marker.club img:not([hidden])+.fallback-logo{display:none;}
+.marker .tiny-tag{position:absolute;white-space:nowrap;top:calc(100% + 3px);font-size:10px;color:var(--text);font-weight:900;background:var(--surface);border-radius:5px;padding:1px 4px;box-shadow:0 2px 8px #1234;pointer-events:none;}
+.source-note {margin-top:12px;color:var(--muted);font-size:11px;}
+
+/* 【5】クリックした項目の詳細パネル */
+.details-panel {padding:24px;display:flex;flex-direction:column;gap:9px;}
+.detail-overline{font-weight:900;font-size:10px;color:var(--accent);letter-spacing:.16em;}
+.detail-feature{display:grid;place-items:center;background:var(--surface-2);width:62px;height:62px;border-radius:17px;font-size:34px;margin:12px 0 3px;}
+.detail-feature img{width:53px;height:53px;object-fit:contain;}
+.details-panel h3 {margin:0;font-size:25px;line-height:1.3;letter-spacing:-.025em;}
+.details-panel p{color:var(--muted);font-size:13px;line-height:1.8;margin:4px 0;}
+.detail-list{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.detail-list span{background:var(--surface-2);border:1px solid var(--border);padding:5px 9px;border-radius:8px;font-size:11px;font-weight:750;}
+.detail-actions{margin-top:auto;display:flex;flex-wrap:wrap;gap:8px;padding-top:14px;}
+.detail-actions a,.travel-links a{display:inline-flex;gap:6px;align-items:center;text-decoration:none;border:1px solid var(--border);padding:8px 11px;border-radius:9px;font-size:12px;font-weight:900;background:var(--surface-2);}
+.detail-actions a:hover,.travel-links a:hover{border-color:var(--accent);}
+
+/* 【6】一覧カード */
+.list-toolbar{display:flex;justify-content:space-between;align-items:center;margin:20px 0 14px;gap:12px;}
+.list-toolbar input{width:min(480px,85%);background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:11px;padding:12px 15px;font-size:13px;}
+#list-count{font-size:12px;color:var(--muted);font-weight:800;}
+.cards-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
+.place-card{border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);min-height:116px;display:flex;align-items:center;gap:10px;padding:14px;text-align:left;}
+.place-card:hover,.place-card:focus-visible{border-color:var(--accent);box-shadow:0 10px 26px #1232;}
+.place-card .badge-icon{width:41px;height:41px;border-radius:12px;display:grid;place-items:center;background:var(--surface-2);font-size:23px;flex:none;}
+.place-card .badge-icon img{width:38px;height:38px;object-fit:contain;}
+.place-card strong{font-size:13px;line-height:1.3;display:block;}
+.place-card small{font-size:11px;line-height:1.5;color:var(--muted);display:block;margin-top:6px;}
+
+/* 【7】交通検索 (flex+gridの練習に向いている箇所) */
+.travel {padding-bottom:90px;}
+.travel-modes{display:flex;gap:8px;margin:20px 0 12px;}
+.travel-modes button{padding:11px 23px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:9px;font-weight:800;font-size:13px;}
+.travel-modes .active{background:var(--text);color:var(--surface);}
+.travel-panel{display:grid;grid-template-columns: minmax(260px,1fr) 1.15fr;min-height:255px;}
+.travel-form{display:flex;flex-wrap:wrap;align-content:center;align-items:end;gap:12px;padding:30px;border-right:1px solid var(--border);}
+.travel-form label{display:flex;flex-direction:column;gap:5px;flex:1 1 170px;font-size:12px;font-weight:800;color:var(--muted);}
+.travel-form select{background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:9px;padding:11px 10px;max-width:100%;}
+.swap{font-size:19px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);padding:8px 15px;border-radius:9px;align-self:end;}
+.route-summary{padding:30px;}.route-eyebrow{font-size:11px;letter-spacing:.14em;color:var(--accent);font-weight:900;}
+.route-summary h3{font-size:21px;line-height:1.4;margin:6px 0;}.route-summary p{color:var(--muted);font-size:12px;}
+.transport-choices{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px;}
+.transport-choices a,.transport-choices span{border:1px solid var(--border);padding:9px 13px;border-radius:10px;background:var(--surface-2);font-size:12px;font-weight:800;text-decoration:none;}
+.transport-choices a:hover{border-color:var(--accent);}
+.travel-links{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px;}
+.travel-footnote{color:var(--muted);font-size:11px;margin-top:13px;}.travel-footnote a{color:var(--accent);}
+.footer{border-top:1px solid var(--border);padding:32px 5%;display:flex;justify-content:space-between;gap:20px;font-size:12px;color:var(--muted);}
+.footer span:first-child{font-size:16px;color:var(--text);font-weight:900;letter-spacing:.1em;}
+
+/* 【8】レスポンシブ対応。画面幅が小さければ地図の横スクロールを許可。 */
+@media(max-width:1120px){
+  .map-layout{grid-template-columns:minmax(0,1fr) 290px;}
+  .cards-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media(max-width:850px){
+  .header{height:70px;}.header nav{display:none;}
+  .hero{grid-template-columns:1fr;}.hero>div:first-child{padding:55px 6%;}.hero-art{display:none;}
+  .map-layout{grid-template-columns:1fr;}.details-panel{min-height:220px;}
+  .cards-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .travel-panel{grid-template-columns:1fr;}.travel-form{border-right:0;border-bottom:1px solid var(--border);}
+}
+@media(max-width:600px){
+  .wrapper{padding:0 4%;}.header{padding:0 4%;}.logo{font-size:15px;}.mode{font-size:11px;padding:8px 10px;}
+  .hero h1{font-size:34px;}.section{padding-top:43px;}
+  .topic-tabs{gap:7px;}.topic{padding:10px 12px;font-size:12px;}
+  .map-canvas{min-width:740px;} /* スマホでピンの小さな文字が潰れないようにする。 */
+  .map-header{padding:10px 12px;flex-wrap:wrap;}
+  .map-footer{font-size:10px;}.cards-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  .place-card{padding:10px;min-height:110px;}.place-card .badge-icon{width:32px;height:32px;}.place-card .badge-icon img{width:31px;height:31px;}
+  .place-card strong{font-size:12px;}.place-card small{font-size:10px;}
+  .travel-form,.route-summary{padding:18px;}.footer{display:block;}.footer span{display:block;margin-bottom:6px;}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;} .topic,.marker{transition:none;}}
+
+/* ================================================================
+ 【V3: 自治州のホバー/クリック】
+  - 地図の土地ポリゴンをSVGで操作する。pointer-events:all を有効化。
+  - :hover と :focus-visible によりPCとキーボードの両方に対応。
+  - 正確なGeoJSON取得時は .borders-ready をbodyに付け、概略図を隠す。
+ ================================================================= */
+.region-nav{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:11px 15px;margin:0 0 12px}
+.region-nav>div{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.region-nav-kicker{color:var(--accent);font-size:10px;font-weight:900;letter-spacing:.16em}
+.region-nav b{font-size:15px}
+.back-region{border:1px solid var(--accent);background:var(--surface-2);color:var(--accent);border-radius:9px;padding:8px 12px;font-weight:850}
+.region-picker-label{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:800}
+#region-picker{border:1px solid var(--border);color:var(--text);background:var(--surface-2);border-radius:9px;padding:7px 11px;max-width:225px}
+#offline-regions .region-shape,#regional-borders .region-shape{fill:rgba(88,162,128,.035);stroke:var(--land-stroke);stroke-width:1.6;cursor:pointer;pointer-events:all;transition:fill .15s,stroke .15s;stroke-linejoin:round}
+#offline-regions .region-shape:hover,#regional-borders .region-shape:hover,
+#offline-regions .region-shape:focus-visible,#regional-borders .region-shape:focus-visible{fill:rgba(39,155,121,.45);stroke:var(--accent);stroke-width:3.4;outline:none}
+#offline-regions .region-shape.is-selected,#regional-borders .region-shape.is-selected{fill:rgba(31,155,124,.25);stroke:var(--accent);stroke-width:3.6}
+#offline-regions circle.regional-point{fill:var(--land);stroke:var(--accent);stroke-width:3}
+.borders-ready #offline-regions{display:none}
+/* SVGの上に表示したラベル等が自治州のマウスイベントを奪わないようにする。 */
+.geo-labels,.compass{pointer-events:none}
+/* 明確な境界を読み込んでも交通の線が州クリックを妨げないようにする。 */
+#rail-network,#rail-selected{pointer-events:none}
+.map-canvas.is-regional .spain-label,.map-canvas.is-regional .sea-label,.map-canvas.is-regional .country-label{display:none}
+/* Region picker から戻ったときもスムーズに遷移。SVGのviewBoxをJSで更新します。 */
+.map-panel{position:relative}
+.marker.spot{width:38px;height:38px;border-radius:16px;background:var(--accent);color:#fff;font-size:21px}
+.marker.spot::after{content:'';position:absolute;inset:-6px;border-radius:19px;border:1px solid rgba(255,255,255,.55);pointer-events:none}
+/* スポットの画像付き説明。表示位置はJavaScriptで決める。 */
+.spot-popup{position:fixed;z-index:9999;width:min(334px,calc(100vw - 22px));padding:0;border:1px solid var(--border);border-radius:17px;background:var(--surface);box-shadow:0 20px 65px rgba(13,33,45,.27);overflow:hidden;color:var(--text)}
+.spot-popup-image{height:160px;background:linear-gradient(130deg,#87bcab,#d5c5a2);overflow:hidden}
+.spot-popup-image img{display:block;width:100%;height:100%;object-fit:cover}
+.spot-popup-info{padding:14px 17px 17px}
+.spot-popup-info h3{font-size:19px;line-height:1.3;margin:5px 0 6px}
+.spot-popup-info p{font-size:12px;color:var(--muted);margin:0 0 8px;line-height:1.7}
+.spot-popup-info a{font-size:12px;font-weight:800;color:var(--accent);text-decoration:none}
+.spot-popup-info small{display:block;margin-top:10px;color:var(--muted);font-size:9px}
+.popup-kicker{color:var(--accent);font-size:10px;font-weight:900;letter-spacing:.12em}
+.spot-popup-close{position:absolute;top:9px;right:9px;width:30px;height:30px;border:0;border-radius:50%;background:rgba(14,32,41,.75);color:#fff;font-size:23px;line-height:1;z-index:1}
+/* 写真付きスポット一覧カード */
+.place-card.spot-card .badge-icon{font-size:24px}
+.place-card.spot-card{min-height:116px}
+/* 公式リーグ日程スナップショット */
+.fixtures-panel{margin-top:22px;background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:24px;box-shadow:var(--shadow)}
+.fixtures-head{display:flex;align-items:start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.fixtures-head h3{margin:4px 0 3px;font-size:22px}
+.fixtures-head p,.fixtures-note{color:var(--muted);font-size:11px;line-height:1.8;margin:0}
+.fixtures-head>a{font-size:12px;font-weight:900;text-decoration:none;border:1px solid var(--accent);color:var(--accent);border-radius:9px;padding:9px 12px}
+.fixture-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0 12px}
+.fixture-item{border:1px solid var(--border);background:var(--surface-2);border-radius:12px;padding:13px 14px}
+.fixture-date{font-size:11px;font-weight:900;color:var(--accent)}
+.fixture-team{font-size:12px;line-height:1.55;font-weight:800;margin-top:7px}
+.fixture-sub{font-size:10px;color:var(--muted);margin-top:3px}
+.details-panel .detail-feature{overflow:hidden}
+@media(max-width:850px){.fixture-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+ .region-nav{padding:10px;align-items:flex-start}.region-nav>div{order:0;flex-basis:100%}
+ .region-picker-label{flex:1}.region-picker-label select{max-width:180px}
+ .fixture-cards{grid-template-columns:1fr}.fixtures-panel{padding:15px}
+ .spot-popup{left:11px!important;right:11px!important;top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom, 0px))!important;width:auto!important}
+ .spot-popup-image{height:125px}.spot-popup-info{padding:10px 13px}.spot-popup-info h3{font-size:17px}
+}
+
+/* ===== v4: チケット情報・AI旅行相談・空港 ===== */
+.ticket-information,.popup-tickets{margin:16px 0;padding:13px;border-radius:12px;border:1px solid var(--line,#d6dfd9);background:rgba(130,150,130,.08);font-size:13px;line-height:1.7}
+.ticket-information strong,.popup-tickets strong{display:block;margin-bottom:5px}
+.ticket-information a,.popup-tickets a{display:inline-block;margin-top:8px;font-weight:700;text-decoration:underline;text-underline-offset:3px;color:inherit}
+.ticket-information small,.popup-tickets small{display:block;margin-top:5px;opacity:.75}
+.marker.airport{background:#285f9b;color:#fff;border:2px solid #fff;box-shadow:0 2px 11px #234a684d;border-radius:14px;padding:4px 8px;font:700 12px/1.1 sans-serif;min-width:52px;z-index:15}
+.marker.airport:hover,.marker.airport:focus-visible{background:#124c7e;transform:translate(-50%,-50%) scale(1.12)}
+.ai-panel{padding:clamp(18px,3vw,32px);border-radius:20px;background:var(--card,#fff);border:1px solid var(--line,#d6dfd9)}
+.ai-panel label{display:block;font-weight:700;margin-bottom:8px}
+.ai-panel textarea{width:100%;max-width:100%;min-height:95px;padding:12px 14px;border-radius:12px;border:1px solid #a7b5b1;color:inherit;background:transparent;font:inherit;box-sizing:border-box}
+.ai-suggestions,.ai-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.ai-suggestions button{border-radius:24px;border:1px solid #a7b5b1;padding:8px 12px;background:transparent;color:inherit;cursor:pointer}
+.ai-caution,.airport-legend{font-size:13px;line-height:1.7;opacity:.78;margin:16px 0}
+@media(max-width:600px){.ai-suggestions button{font-size:12px}.ticket-information{font-size:12px}.ai-actions>*{max-width:100%}}
